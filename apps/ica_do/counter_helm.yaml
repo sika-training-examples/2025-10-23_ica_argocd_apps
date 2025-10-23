@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: counter-helm
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: counter-helm
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: https://github.com/sika-training-examples/2025-10-22_ica_helm_example.git
+      path: .
+      helm:
+        valuesObject:
+          host: counter-helm.k8s.sikademo.com
+          TERGUM_AZURE_BLOB_ACCOUNT_KEY: xxx
+          ingressClassName: nginx
